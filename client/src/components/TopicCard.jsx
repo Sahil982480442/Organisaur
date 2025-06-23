@@ -1,44 +1,39 @@
-import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import UploadForm from './UploadForm';
-import axios from 'axios';
 
 const TopicCard = ({ topic }) => {
   const [showForm, setShowForm] = useState(false);
-  const [resources, setResources] = useState([]);
-
-  useEffect(() => {
-    axios.get(`http://localhost:5000/api/submissions/approved/${topic._id}`)
-      .then(res => setResources(res.data))
-      .catch(err => console.error(err));
-  }, [topic._id]);
 
   return (
-    <div className="p-4 bg-white shadow rounded">
-      <h2 className="text-xl font-semibold">{topic.title}</h2>
-      <p className="text-sm text-gray-600 mb-2">{topic.description}</p>
+    <div className="p-6 bg-white shadow-md rounded-2xl hover:shadow-lg transition-all duration-300 border border-gray-200">
+      <div className="mb-4">
+        <h2 className="text-2xl font-semibold text-gray-800">{topic.title}</h2>
+        <p className="text-sm text-gray-600 mt-1">{topic.description}</p>
+      </div>
 
-      <button
-        onClick={() => setShowForm(true)}
-        className="mb-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-      >
-        Upload Resource
-      </button>
+      <div className="flex gap-3">
+        {/* View Button */}
+        <Link
+          to={`/topic/${topic._id}`}
+          className="px-4 py-2 rounded-lg text-white bg-emerald-600 hover:bg-emerald-700 transition-all text-sm font-medium shadow-sm"
+        >
+          📂 View Resources
+        </Link>
 
-      {showForm && <UploadForm topicId={topic._id} closeForm={() => setShowForm(false)} />}
+        {/* Upload Button */}
+        <button
+          onClick={() => setShowForm(true)}
+          className="px-4 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all text-sm font-medium shadow-sm"
+        >
+          ⬆️ Upload Resource
+        </button>
+      </div>
 
-      <h4 className="font-medium mt-3">Approved Resources:</h4>
-      {resources.length === 0 ? (
-        <p className="text-sm text-gray-500">No approved resources yet.</p>
-      ) : (
-        <ul className="list-disc list-inside text-sm mt-1">
-          {resources.map((res) => (
-            <li key={res._id}>
-              <a href={res.link} target="_blank" rel="noreferrer" className="text-blue-600 underline">
-                 {res.type} {/*by {res.name} */}
-              </a>
-            </li>
-          ))}
-        </ul>
+      {showForm && (
+        <div className="mt-4">
+          <UploadForm topicId={topic._id} closeForm={() => setShowForm(false)} />
+        </div>
       )}
     </div>
   );

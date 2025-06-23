@@ -5,7 +5,8 @@ const {
   submitResource,
   getAllSubmissions,
   approveSubmission,
-  getApprovedByTopic
+  getApprovedByTopic,
+  discardSubmission
 } = require('../controllers/submissionController');
 
 // ✅ Each handler must be a function
@@ -13,6 +14,8 @@ router.post('/', submitResource);
 router.get('/all', getAllSubmissions);
 router.put('/approve/:id', approveSubmission);
 router.get('/approved/:topicId', getApprovedByTopic);
+router.delete('/discard/:id', discardSubmission);
+
 
 module.exports = router;
 

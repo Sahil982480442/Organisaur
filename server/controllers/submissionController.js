@@ -23,12 +23,23 @@ exports.getSubmissionsByTopic = async (req, res) => {
 
 exports.getAllSubmissions = async (req, res) => {
   try {
-    const submissions = await Submission.find({ approved: false });
+    const submissions = await Submission
+      .find({ approved: false })
+      .populate('topicId', 'title description'); // Only fetch necessary fields
     res.json(submissions);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
+// exports.getAllSubmissions = async (req, res) => {
+//   try {
+//     const submissions = await Submission.find({ approved: false });
+//     res.json(submissions);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// };
 
 exports.approveSubmission = async (req, res) => {
   try {
@@ -57,6 +68,16 @@ exports.submitResource = async (req, res) => {
     const submission = new Submission({ topicId, name, email, link, type });
     await submission.save();
     res.status(201).json({ message: 'Submitted for approval' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.discardSubmission = async (req, res) => {
+  try {
+    const id = req.params.id;
+    await Submission.findByIdAndDelete(id);
+    res.status(200).json({ message: 'Submission discarded' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
